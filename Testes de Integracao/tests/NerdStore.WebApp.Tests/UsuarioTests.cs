@@ -1,4 +1,7 @@
-﻿using NerdStore.WebApp.Tests.Config;
+﻿using Microsoft.AspNetCore.Http;
+using NerdStore.WebApp.Tests.Config;
+using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -14,6 +17,39 @@ namespace NerdStore.WebApp.Tests
             _testsFixture = testsFixture;
         }
 
-        //Criar os testes aqui
+
+        [Fact(DisplayName = "Realizar cadastro com sucesso")]
+        [Trait("Categoria", "Integração Web - Usuário")]
+        public async Task Usuario_RealizarCadastro_DeveExecutarComSucesso()
+        {
+            var initialResponse = await _testsFixture.Client.GetAsync(requestUri: "/Identity/Account/Register"); 
+            initialResponse.EnsureSuccessStatusCode();
+
+            var antiForgeryToken = _testsFixture.ObterAntiForgeryToken(await initialResponse.Content.ReadAsStringAsync());
+
+            _testsFixture.GerarUserSenha();
+
+            var formData = new Dictionary<string, string>
+            {
+                { _testsFixture.AntiForgeryFieldName, antiForgeryToken },
+                { "Input.Email", _testsFixture.UsuarioEmail }, //Baseia-se no campo name do html la no formulario de cadastro
+                { "Input.Password", _testsFixture.UsuarioSenha },
+                { "Input.ConfirmPassword", _testsFixture.UsuarioSenha },
+            };
+
+            var postRequest = new HttpRequestMessage(HttpMethod.Post, "/Identity/Account/Register")
+            {
+                Content = new FormUrlEncodedContent(formData)
+            };
+
+            //Act
+            var postResponse = await _testsFixture.Client.SendAsync(postRequest);
+
+            //Assert
+            var responseString = await postResponse.Content.ReadAsStringAsync();
+            
+            postResponse.EnsureSuccessStatusCode();
+            Assert.Contains($"Hello {_testsFixture.UsuarioEmail}!", responseString);
+        }
     }
 }

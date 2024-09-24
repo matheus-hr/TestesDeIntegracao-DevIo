@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NerdStore.WebApp.MVC.Data;
 using NerdStore.Catalogo.Application.AutoMapper;
@@ -12,18 +10,22 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Http;
-using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using Microsoft.AspNetCore.Hosting;
-using System.Linq;
 
 public class StartupWebTests
 {
     public IConfiguration Configuration { get; }
 
-    public StartupWebTests(IConfiguration configuration)
+    public StartupWebTests(IWebHostEnvironment hostingEnvironment)
     {
-        Configuration = configuration;
+        var builder = new ConfigurationBuilder()
+            .SetBasePath(hostingEnvironment.ContentRootPath)
+            .AddJsonFile("appsettings.json", true, true)
+            .AddJsonFile($"appsettings.{hostingEnvironment.EnvironmentName}.json", true, true)
+            .AddEnvironmentVariables();
+
+        Configuration = builder.Build();
     }
 
     // Configuração de serviços (ConfigureServices)
@@ -57,34 +59,6 @@ public class StartupWebTests
         services.AddControllersWithViews().AddRazorRuntimeCompilation();
         services.AddHttpContextAccessor();
 
-        services.AddSwaggerGen(c =>
-        {
-            var security = new Dictionary<string, IEnumerable<string>>
-            {
-                { "Bearer", new string[] { } }
-            };
-
-            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-            {
-                Description = "Insira o token JWT desta maneira: Bearer {seu token}",
-                Name = "Authorization",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.ApiKey
-            });
-
-            c.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                { new OpenApiSecurityScheme { Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" } }, new string[] { } }
-            });
-
-            c.SwaggerDoc("v1", new OpenApiInfo
-            {
-                Version = "v1",
-                Title = "desenvolvedor.io API",
-                Description = "desenvolvedor.io API",
-                TermsOfService = null,
-            });
-        });
 
         services.AddAutoMapper(typeof(DomainToViewModelMappingProfile), typeof(ViewModelToDomainMappingProfile));
         services.AddMediatR(typeof(Program));
@@ -121,12 +95,6 @@ public class StartupWebTests
             routes.MapRoute(
                 name: "default",
                 template: "{controller=Vitrine}/{action=Index}/{id?}");
-        });
-
-        app.UseSwagger();
-        app.UseSwaggerUI(s =>
-        {
-            s.SwaggerEndpoint("/swagger/v1/swagger.json", "desenvolvedor.io API v1.0");
         });
     }
 }
