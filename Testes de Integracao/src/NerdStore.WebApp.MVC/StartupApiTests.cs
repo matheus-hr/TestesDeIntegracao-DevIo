@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using Microsoft.AspNetCore.Hosting;
+using System.Reflection;
 
 public class StartupApiTests
 {
@@ -86,7 +87,7 @@ public class StartupApiTests
         });
 
         services.AddAutoMapper(typeof(DomainToViewModelMappingProfile), typeof(ViewModelToDomainMappingProfile));
-        services.AddMediatR(typeof(Program));
+        services.AddMediatR(x => x.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
         services.RegisterServices();
     }
 

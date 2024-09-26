@@ -156,7 +156,7 @@ namespace NerdStore.Vendas.Application.Commands
             return await _pedidoRepository.UnitOfWork.Commit();
         }
 
-        private bool ValidarComando(Command message)
+        public bool ValidarComando(Command message)
         {
             if (message.EhValido()) return true;
 

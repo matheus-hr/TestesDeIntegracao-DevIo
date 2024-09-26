@@ -1,9 +1,11 @@
 ﻿using Bogus;
 using Microsoft.AspNetCore.Mvc.Testing;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace NerdStore.WebApp.Tests.Config
@@ -29,7 +31,10 @@ namespace NerdStore.WebApp.Tests.Config
         {
             var clientOptions = new WebApplicationFactoryClientOptions
             {
-
+                AllowAutoRedirect = true, //Permite redirecionamentos
+                BaseAddress = new Uri("http://localhost"),
+                HandleCookies = true, //Persiste o cookie das requisições adiante
+                MaxAutomaticRedirections = 7
             };
 
             Factory = new LojaAppFactory<TStartup>();
@@ -42,6 +47,53 @@ namespace NerdStore.WebApp.Tests.Config
             
             UsuarioEmail = faker.Internet.Email().ToLower();
             UsuarioSenha = faker.Internet.Password(8, false, "", "@1Ab_");
+        }
+
+        private async Task CadastrarUsuarioTeste()
+        {
+            var initialResponse = await Client.GetAsync(requestUri: "/Identity/Account/Register");
+            initialResponse.EnsureSuccessStatusCode();
+
+            var antiForgeryToken = ObterAntiForgeryToken(await initialResponse.Content.ReadAsStringAsync());
+
+            var formData = new Dictionary<string, string>
+            {
+                { AntiForgeryFieldName, antiForgeryToken },
+                { "Input.Email", "teste@teste.com" },
+                { "Input.Password", "Teste@123" },
+                { "Input.ConfirmPassword", "Teste@123" },
+            };
+
+            var postRequest = new HttpRequestMessage(HttpMethod.Post, "/Identity/Account/Register")
+            {
+                Content = new FormUrlEncodedContent(formData)
+            };
+
+            await Client.SendAsync(postRequest);
+        }
+
+        public async Task RealizarLoginWeb()
+        {
+            await CadastrarUsuarioTeste();
+
+            var initialResponse = await Client.GetAsync("/Identity/Account/Login");
+            initialResponse.EnsureSuccessStatusCode();
+
+            var antiForgeryToken = ObterAntiForgeryToken(await initialResponse.Content.ReadAsStringAsync());
+
+            var formData = new Dictionary<string, string>
+            {
+                { AntiForgeryFieldName, antiForgeryToken },
+                { "Input.Email", "teste@teste.com" }, 
+                { "Input.Password", "Teste@123" }
+            };
+
+            var postRequest = new HttpRequestMessage(HttpMethod.Post, "/Identity/Account/Login")
+            {
+                Content = new FormUrlEncodedContent(formData)
+            };
+
+            await Client.SendAsync(postRequest);
         }
 
         public string ObterAntiForgeryToken(string htmlBody)

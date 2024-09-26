@@ -31,7 +31,7 @@ namespace NerdStore.WebApp.Tests
             var formData = new Dictionary<string, string>
             {
                 { _testsFixture.AntiForgeryFieldName, antiForgeryToken },
-                { "Input.Email", _testsFixture.UsuarioEmail }, //Baseia-se no campo name do html la no formulario de cadastro
+                { "Input.Email", _testsFixture.UsuarioEmail }, //Neste caso em especifico, por ser do formulario de cadastro, o valor baseia-se no campo name do html la no formulario de cadastro
                 { "Input.Password", _testsFixture.UsuarioSenha },
                 { "Input.ConfirmPassword", _testsFixture.UsuarioSenha },
             };
@@ -66,7 +66,7 @@ namespace NerdStore.WebApp.Tests
             var formData = new Dictionary<string, string>
             {
                 { _testsFixture.AntiForgeryFieldName, antiForgeryToken },
-                { "Input.Email", _testsFixture.UsuarioEmail }, //Baseia-se no campo name do html la no formulario de cadastro
+                { "Input.Email", _testsFixture.UsuarioEmail }, //Neste caso em especifico, por ser do formulario de cadastro, o valor baseia-se no campo name do html la no formulario de cadastro
                 { "Input.Password", senhaFraca },
                 { "Input.ConfirmPassword", senhaFraca },
             };
@@ -101,7 +101,7 @@ namespace NerdStore.WebApp.Tests
             var formData = new Dictionary<string, string>
             {
                 { _testsFixture.AntiForgeryFieldName, antiForgeryToken },
-                { "Input.Email", _testsFixture.UsuarioEmail }, //Baseia-se no campo name do html la no formulario de cadastro
+                { "Input.Email", _testsFixture.UsuarioEmail }, //Neste caso em especifico, por ser do formulario de cadastro, o valor baseia-se no campo name do html la no formulario de cadastro
                 { "Input.Password", _testsFixture.UsuarioSenha }
             };
 

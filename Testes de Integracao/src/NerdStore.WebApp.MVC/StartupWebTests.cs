@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting.StaticWebAssets;
 using Microsoft.AspNetCore.Hosting;
+using System.Reflection;
 
 public class StartupWebTests
 {
@@ -61,7 +62,8 @@ public class StartupWebTests
 
 
         services.AddAutoMapper(typeof(DomainToViewModelMappingProfile), typeof(ViewModelToDomainMappingProfile));
-        services.AddMediatR(typeof(Program));
+        services.AddMediatR(x => x.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
         services.RegisterServices();
     }
 

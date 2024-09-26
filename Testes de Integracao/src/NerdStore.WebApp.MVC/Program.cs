@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -13,15 +12,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Hosting.StaticWebAssets;
+using NerdStore.Vendas.Application.Commands;
 
 var builder = WebApplication.CreateBuilder(args);
-
-if (builder.Environment.IsEnvironment("Local"))
-{
-    StaticWebAssetsLoader.UseStaticWebAssets(
-        builder.Environment, builder.Configuration);
-}
 
 // Configuração de serviços (ConfigureServices)
 builder.Services.Configure<CookiePolicyOptions>(options =>
@@ -85,7 +78,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddAutoMapper(typeof(DomainToViewModelMappingProfile), typeof(ViewModelToDomainMappingProfile));
 
-builder.Services.AddMediatR(typeof(Program));
+builder.Services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(AdicionarItemPedidoCommand).Assembly));
 
 builder.Services.RegisterServices();
 

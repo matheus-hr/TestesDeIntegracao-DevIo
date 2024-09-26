@@ -22,4 +22,8 @@
     <ProjectReference Include="..\..\src\NerdStore.WebApp.MVC\NerdStore.WebApp.MVC.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Config\NewFolder\" />
+  </ItemGroup>
+
 </Project>

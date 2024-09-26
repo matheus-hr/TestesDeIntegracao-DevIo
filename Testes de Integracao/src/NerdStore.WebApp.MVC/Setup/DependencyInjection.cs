@@ -26,7 +26,6 @@ namespace NerdStore.WebApp.MVC.Setup
             services.AddScoped<IEstoqueService, EstoqueService>();
             services.AddScoped<CatalogoContext>();
 
-            
             // Vendas
             services.AddScoped<IPedidoRepository, PedidoRepository>();
             services.AddScoped<IPedidoQueries, PedidoQueries>();
