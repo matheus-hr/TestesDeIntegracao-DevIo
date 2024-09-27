@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using NerdStore.WebApp.MVC.Data;
 using NerdStore.Catalogo.Application.AutoMapper;
