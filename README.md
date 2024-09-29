@@ -7,6 +7,9 @@
 Este projeto tem como objetivo demonstrar a criação e execução de testes de integração utilizando C#. A aplicação consiste em um simples um e-commerce, no qual temos as funcionalidades de produto, carrinho, pedido, voucher dentre outros. <br/><br/>
 Esse codigo faz parte do curso de Dominando os testes de software do Eduardo Pires - Desenvolvedor.io
 
+Esse codigo tambem contem conteudo dos testes de unidade do seguinte repositorio: <br/>
+https://github.com/matheus-hr/TDD-Exemplo-DevIo/tree/main
+
 ## 🚀 Tecnologias Utilizadas
 
 * **xUnit:** Framework de teste de unidade para .NET.
